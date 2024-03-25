@@ -15,13 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include  # Import include function
-
-from BazaarApp import views as index_views  # Import views from BazaarApp app
+from django.urls import path, include
+from BazaarApp import views  # Import your views from your BazaarApp
 
 urlpatterns = [
-    path('', index_views.index, name='index'),  # Add URL pattern for index view
-    path('admin/', admin.site.urls),
-    # Other URL patterns can go here as needed
+    path('admin/', admin.site.urls),  # Admin site URL
+    path('summernote/', include('django_summernote.urls')),  # Summernote URL
+    path('', include('blog.urls')),  # Include your blog app's URLs
 ]
-
