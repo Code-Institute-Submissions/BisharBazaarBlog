@@ -21,5 +21,5 @@ from BazaarApp import views  # Import your views from your BazaarApp
 urlpatterns = [
     path('admin/', admin.site.urls),  # Admin site URL
     path('summernote/', include('django_summernote.urls')),  # Summernote URL
-    path('', include('blog.urls')),  # Include your blog app's URLs
+    path('', include('BazaarApp.urls')),  # Include your BazaarApp's URLs
 ]
