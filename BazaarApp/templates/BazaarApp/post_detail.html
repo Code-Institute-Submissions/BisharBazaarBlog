@@ -1,24 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ post.title }}</title>
-</head>
-<body>
-    <h1>{{ post.title }}</h1>
-    <p>{{ post.content }}</p>
-    <h2>Comments</h2>
-    <ul>
-        {% for comment in comments %}
-            <li>{{ comment.author }}: {{ comment.body }}</li>
-        {% endfor %}
-    </ul>
-    <h2>Add a Comment</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ comment_form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
-</body>
-</html>
+{% extends 'base.html' %} 
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<!-- Custom post_detail.html content starts here -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h1 class="post-title">{{ post.title }}</h1>
+            <p class="post-meta">{{ post.author }} | {{ post.created_on }}</p>
+        </div>
+        <div class="col-md-6 d-none d-md-block">
+            {% if post.featured_image %}
+            <img src="{{ post.featured_image.url }}" class="img-fluid" alt="{{ post.title }}">
+            {% else %}
+            <img src="{% static 'images/default.jpg' %}" class="img-fluid" alt="Placeholder Image">
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <article class="post-content">
+                        {{ post.content | safe }}
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h2>Comments:</h2>
+            <hr>
+            <div class="comments-section">
+                {% for comment in comments %}
+                <div class="comment">
+                    <p class="comment-author">{{ comment.author }} <span class="comment-date">{{ comment.created_on }}</span></p>
+                    <p class="comment-body">{{ comment.body | linebreaks }}</p>
+                    {% if user.is_authenticated and comment.author == user %}
+                    <button class="btn btn-sm btn-primary edit-comment" data-comment-id="{{ comment.id }}">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-comment" data-comment-id="{{ comment.id }}">Delete</button>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p>No comments yet. Be the first to comment!</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h2>Leave a Comment</h2>
+            <hr>
+            <div class="comment-form">
+                {% if user.is_authenticated %}
+                <form method="post" id="commentForm">
+                    {% csrf_token %}
+                    {{ comment_form | crispy }}
+                    <button type="submit" class="btn btn-primary">Submit Comment</button>
+                </form>
+                {% else %}
+                <p>Please <a href="{% url 'login' %}">log in</a> to leave a comment.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Custom post_detail.html content ends here -->
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'js/comments.js' %}"></script>
+{% endblock %}

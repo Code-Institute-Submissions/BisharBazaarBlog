@@ -1,12 +1,14 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.views import generic
 from .models import Post, Comment
 from .forms import CommentForm
-from django.views.generic import ListView
 
-class PostList(ListView):
+# Create your views here.
+
+
+class PostList(generic.ListView):
     """
     Returns all published posts in :model:`BazaarApp.Post`
     and displays them in a page of six posts.
@@ -21,9 +23,10 @@ class PostList(ListView):
 
     :template:`BazaarApp/index.html`
     """
-    model = Post
+    queryset = Post.objects.filter(status=1)
     template_name = "BazaarApp/index.html"
     paginate_by = 6
+
 
 def post_detail(request, slug):
     """
@@ -44,20 +47,23 @@ def post_detail(request, slug):
 
     :template:`BazaarApp/post_detail.html`
     """
-    post = get_object_or_404(Post, slug=slug, status=1)
-    comments = post.comments.filter(approved=True).order_by("-created_on")
-    comment_count = comments.count()
-
+    queryset = Post.objects.filter(status=1)
+    post = get_object_or_404(queryset, slug=slug)
+    comments = post.comments.all().order_by("-created_on")
+    comment_count = post.comments.filter(approved=True).count()
     if request.method == "POST":
         comment_form = CommentForm(data=request.POST)
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
+            comment.author = request.user
             comment.post = post
             comment.save()
-            messages.success(request, 'Comment submitted and awaiting approval')
-            return HttpResponseRedirect(reverse('post_detail', kwargs={'slug': slug}))
-    else:
-        comment_form = CommentForm()
+            messages.add_message(
+                request, messages.SUCCESS,
+                'Comment submitted and awaiting approval'
+            )
+
+    comment_form = CommentForm()
 
     return render(
         request,
@@ -69,6 +75,7 @@ def post_detail(request, slug):
             "comment_form": comment_form
         },
     )
+
 
 def comment_edit(request, slug, comment_id):
     """
@@ -83,25 +90,25 @@ def comment_edit(request, slug, comment_id):
     ``comment_form``
         An instance of :form:`BazaarApp.CommentForm`
     """
-    comment = get_object_or_404(Comment, pk=comment_id)
-
     if request.method == "POST":
-        comment_form = CommentForm(data=request.POST, instance=comment)
-        if comment_form.is_valid() and comment.author == request.user:
-            comment_form.save()
-            messages.success(request, 'Comment Updated!')
-        else:
-            messages.error(request, 'Error updating comment!')
-        return HttpResponseRedirect(reverse('post_detail', kwargs={'slug': slug}))
 
-    return render(
-        request,
-        "BazaarApp/comment_edit.html",
-        {
-            "comment": comment,
-            "comment_form": CommentForm(instance=comment)
-        },
-    )
+        queryset = Post.objects.filter(status=1)
+        post = get_object_or_404(queryset, slug=slug)
+        comment = get_object_or_404(Comment, pk=comment_id)
+        comment_form = CommentForm(data=request.POST, instance=comment)
+
+        if comment_form.is_valid() and comment.author == request.user:
+            comment = comment_form.save(commit=False)
+            comment.post = post
+            comment.approved = False
+            comment.save()
+            messages.add_message(request, messages.SUCCESS, 'Comment Updated!')
+        else:
+            messages.add_message(request, messages.ERROR,
+                                 'Error updating comment!')
+
+    return HttpResponseRedirect(reverse('post_detail', args=[slug]))
+
 
 def comment_delete(request, slug, comment_id):
     """
@@ -114,13 +121,15 @@ def comment_delete(request, slug, comment_id):
     ``comment``
         A single comment related to the post.
     """
+    queryset = Post.objects.filter(status=1)
+    post = get_object_or_404(queryset, slug=slug)
     comment = get_object_or_404(Comment, pk=comment_id)
 
-    if request.method == "POST" and comment.author == request.user:
+    if comment.author == request.user:
         comment.delete()
-        messages.success(request, 'Comment deleted!')
+        messages.add_message(request, messages.SUCCESS, 'Comment deleted!')
     else:
-        messages.error(request, 'You can only delete your own comments!')
-    
-    return HttpResponseRedirect(reverse('post_detail', kwargs={'slug': slug}))
+        messages.add_message(request, messages.ERROR,
+                             'You can only delete your own comments!')
 
+    return HttpResponseRedirect(reverse('post_detail', args=[slug]))
