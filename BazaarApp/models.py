@@ -1,25 +1,25 @@
 from django.db import models
 from django.contrib.auth.models import User
-
-# Import CloudinaryField from cloudinary.models
 from cloudinary.models import CloudinaryField
 
-STATUS_CHOICES = ((0, "Draft"), (1, "Published"))
+STATUS = ((0, "Draft"), (1, "Published"))
+
+# Create your models here.
+
 
 class Post(models.Model):
     """
-    Stores a single blog post entry related to the author.
+    Stores a single BazaarApp post entry related to :model:`auth.User`.
     """
     title = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="bazaar_posts"
+        User, on_delete=models.CASCADE, related_name="BazaarApp_posts"
     )
-    # Use CloudinaryField for the featured_image
     featured_image = CloudinaryField('image', default='placeholder')
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
-    status = models.IntegerField(choices=STATUS_CHOICES, default=0)
+    status = models.IntegerField(choices=STATUS, default=0)
     excerpt = models.TextField(blank=True)
     updated_on = models.DateTimeField(auto_now=True)
 
@@ -32,12 +32,13 @@ class Post(models.Model):
 
 class Comment(models.Model):
     """
-    Stores a single comment entry related to the post and author.
+    Stores a single comment entry related to :model:`auth.User`
+    and :model:`BazaarApp.Post`.
     """
     post = models.ForeignKey(Post, on_delete=models.CASCADE,
                              related_name="comments")
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="bazaar_comments")
+        User, on_delete=models.CASCADE, related_name="commenter")
     body = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)

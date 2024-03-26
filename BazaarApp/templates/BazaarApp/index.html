@@ -2,51 +2,65 @@
 {% load static %}
 {% block content %}
 
-<!-- Custom index.html content starts here -->
-<div class="container">
+<!-- index.html content starts here -->
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-12 mt-5">
-            <h1>Welcome to BisharBazaar Blog!</h1>
-            <p class="lead">Explore the latest posts from our blog:</p>
-        </div>
-    </div>
 
-    <div class="row">
-        {% for post in post_list %}
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <img src="{% if post.featured_image %}{{ post.featured_image.url }}{% else %}{% static 'images/default.jpg' %}{% endif %}" class="card-img-top" alt="{% if post.featured_image %}{{ post.title }}{% else %}Placeholder Image{% endif %}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ post.title }}</h5>
-                    <p class="card-text">{{ post.excerpt }}</p>
-                    <a href="{% url 'post_detail' post.slug %}" class="btn btn-primary">Read More</a>
+        <!-- Blog Entries Column -->
+        <div class="col-12 mt-3 left">
+            <div class="row">
+                {% for post in post_list %}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="image-container">
+                                {% if "placeholder" in post.featured_image.url %}
+                                <img class="card-img-top" src="{% static 'images/default.jpg' %}"
+                                    alt="placeholder image">
+                                {% else %}
+                                <img class="card-img-top" src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+                                {% endif %}
+                                <div class="image-flash">
+                                    <p class="author">Author: {{ post.author }}</p>
+                                </div>
+                            </div>
+                            <a href="{% url 'post_detail' post.slug %}" class="post-link text-decoration-none">
+                                <h2 class="card-title">{{ post.title }}</h2>
+                                <p class="card-text">{{ post.excerpt }}</p>
+                            </a>
+                            <hr>
+                            <p class="card-text text-muted h6">Created on: {{ post.created_on }}</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-footer text-muted">
-                    <p class="mb-0">Author: {{ post.author }}</p>
-                    <p class="mb-0">Published on: {{ post.created_on|date }}</p>
-                </div>
+                {% if forloop.counter|divisibleby:3 %}
+            </div>
+            <div class="row">
+                {% endif %}
+                {% endfor %}
+
             </div>
         </div>
-        {% endfor %}
     </div>
-
     {% if is_paginated %}
-    <div class="row">
-        <div class="col-md-12">
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    {% if page_obj.has_previous %}
-                    <li class="page-item"><a href="?page={{ page_obj.previous_page_number }}" class="page-link">&laquo; Previous</a></li>
-                    {% endif %}
-                    {% if page_obj.has_next %}
-                    <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link">Next &raquo;</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a href="?page={{ page_obj.previous_page_number }}" class="page-link">&laquo; PREV
+                </a></li>
+            {% endif %}
+            {% if page_obj.has_next %}
+            <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link"> NEXT &raquo;</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
     {% endif %}
 </div>
-<!-- Custom index.html content ends here -->
 
+<!-- index.html content ends here -->
 {% endblock %}
+
+<!-- index.html content ends here -->
+{% endblock %}
+{% block copyright %}Copyright 2023 Matt Rudge{% endblock %}

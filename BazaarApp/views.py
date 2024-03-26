@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, reverse
+from django.views import generic
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.views import generic
 from .models import Post, Comment
 from .forms import CommentForm
 
@@ -117,7 +117,7 @@ def comment_delete(request, slug, comment_id):
     **Context**
 
     ``post``
-        An instance of :model:`BazaarApp.Post`.
+        An instance of :model:`blog.Post`.
     ``comment``
         A single comment related to the post.
     """

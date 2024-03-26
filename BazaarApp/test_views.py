@@ -7,21 +7,22 @@ from .models import Post
 # Create your tests here.
 class TestBlogViews(TestCase):
 
+
     def setUp(self):
-        """Create a superuser and a blog post"""
+        """Create a superuser and a BazaarApp post"""
         self.user = User.objects.create_superuser(
             username="myUsername", password="myPassword", email="abdulrazakbishar@gmail.com")
-        self.post = Post(title="Blog title", author=self.user,
-                         slug="blog-title", excerpt="Blog excerpt",
-                         content="Blog content", status=1)
+        self.post = Post(title="BazaarApp title", author=self.user,
+                         slug="BazaarApp-title", excerpt="BazaarApp excerpt",
+                         content="BazaarApp content", status=1)
         self.post.save()
 
     def test_render_post_detail_page_with_comment_form(self):
-        """Verifies a single blog post containing a comment form is returned"""
-        response = self.client.get(reverse('post_detail', args=['blog-title']))
+        """Verifies a single BazaarApp post containing a comment form is returned"""
+        response = self.client.get(reverse('post_detail', args=['BazaarApp-title']))
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Blog title", response.content)
-        self.assertIn(b"Blog content", response.content)
+        self.assertIn(b"BazaarApp title", response.content)
+        self.assertIn(b"BazaarApp content", response.content)
         self.assertIsInstance(
             response.context['comment_form'], CommentForm)
 
@@ -32,7 +33,7 @@ class TestBlogViews(TestCase):
             'body': 'This is a test comment.'
         }
         response = self.client.post(
-            reverse('post_detail', args=['blog-title']), post_data)
+            reverse('post_detail', args=['BazaarApp-title']), post_data)
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Comment submitted and awaiting approval',
                       response.content)
