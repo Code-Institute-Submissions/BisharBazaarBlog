@@ -33,8 +33,8 @@ DEBUG = False
 
 # settings.py
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '8000-abdirizak0-bisharbazaar-t9822r55ppt.ws-eu110.gitpod.io']
 
+ALLOWED_HOSTS = ['localhost', '.herokuapp.com']
 
 
 # Application definition

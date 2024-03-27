@@ -9,7 +9,7 @@ STATUS = ((0, "Draft"), (1, "Published"))
 
 class Post(models.Model):
     """
-    Stores a single BazaarApp post entry related to :model:`auth.User`.
+    Stores a single blog post entry related to :model:`auth.User`.
     """
     title = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)

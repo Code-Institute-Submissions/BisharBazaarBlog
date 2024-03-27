@@ -117,7 +117,7 @@ def comment_delete(request, slug, comment_id):
     **Context**
 
     ``post``
-        An instance of :model:`blog.Post`.
+        An instance of :model:`BazaarApp.Post`.
     ``comment``
         A single comment related to the post.
     """
