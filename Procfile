@@ -1,1 +1,1 @@
-gunicorn BazaarBisharBlog.wsgi
+web: gunicorn BazaarBisharBlog.wsgi
