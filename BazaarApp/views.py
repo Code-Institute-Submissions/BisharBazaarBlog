@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.views import generic
+from .models import Product
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from .models import Post, Comment
@@ -133,3 +134,11 @@ def comment_delete(request, slug, comment_id):
                              'You can only delete your own comments!')
 
     return HttpResponseRedirect(reverse('post_detail', args=[slug]))
+
+class ProductList(generic.ListView):
+    """
+    Returns all products and displays them.
+    """
+    queryset = Product.objects.all()  # Adjust this if you want to filter products
+    template_name = "BazaarApp/product_list.html"  # Specify your template name
+    paginate_by = 6  # Adjust pagination as needed
