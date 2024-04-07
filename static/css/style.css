@@ -6,7 +6,9 @@ body {
     font-family: Lato, sans-serif;
     font-size: 1.4rem;
     font-weight: 700;
-    color: #4A4A4F;
+    color: #4A4A4F;  /* Change to a darker color for better contrast */
+    vertical-align: middle; /* Align the image vertically within its container */
+    margin-right: 10px; /* Add some space between the image and the text */
 }
 
 .red-o {
@@ -26,8 +28,13 @@ body {
 }
 
 .main-bg {
-    background-color: #F9FAFC;
+    background-image: url("{% static 'images/img/pexels-giallo-859895_czhz60.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh; /* Set minimum height to cover the entire viewport */
 }
+
 
 .card {
     border: none;
@@ -67,8 +74,8 @@ body {
 }
 
 .masthead-text {
-    background-color: #445261;
-    color: white;
+    background-color: rgba(68, 82, 97, 0.8); /* Add transparency to the background color */
+    color: white;  /* Change text color to white for better contrast */
     position: relative;
 }
 
@@ -84,13 +91,12 @@ body {
     right: 90%;
     height: 100%;
     width: 150%;
-    background: #445261;
+    background: rgba(68, 82, 97, 0.8); /* Add transparency to the background color */
     -webkit-transform: skew(15deg);
     -moz-transform: skew(15deg);
     transform: skew(15deg);
     z-index: 100;
 }
-
 
 .profile-image {
     width: 75%;
@@ -128,15 +134,13 @@ body {
     color: #23BBBB;
 }
 
-.link {
-    color: #23BBBB;
-    text-decoration: none;
+.nav-link {
+    color: #4A4A4F;  /* Change the default link color */
 }
 
-.link:hover,
-.link:active {
-    color: #445261;
-    text-decoration: underline;
+.nav-link:hover,
+.nav-link:active {
+    color: #E84610;  /* Change the link color on hover and active states */
 }
 
 .btn-like {

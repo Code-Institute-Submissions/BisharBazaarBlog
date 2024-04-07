@@ -1,14 +1,19 @@
 from django import forms
-from .models import Comment
-
+from .models import Comment, Product, Post  # Corrected import statement
 
 class CommentForm(forms.ModelForm):
-    """
-    Form class for users to comment on a post
-    """
+    body = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Enter your comment here'}))
+
     class Meta:
-        """
-        Specify the django model and order of the fields
-        """
         model = Comment
         fields = ('body',)
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'brand', 'description', 'specifications', 'price', 'image']
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'featured_image']
